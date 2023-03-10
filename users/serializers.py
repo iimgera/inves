@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import BlockedUser
 
 class AuthorizationSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -38,3 +39,13 @@ class UserSerializer(serializers.ModelSerializer):
 
         )
         return user
+
+
+
+
+class BlockedUserSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = BlockedUser
+        fields = ['id', 'user', 'blocked_at']

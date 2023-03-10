@@ -1,26 +1,37 @@
-# from django.db import models
-# from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager, PermissionsMixin)
+from django.db import models
+from django.contrib.auth.models import User
+
+class Investor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    photo = models.ImageField(upload_to='investors', null=True, blank=True)
+    about = models.TextField()
+    active = models.BooleanField(default=True)
 
 
 
-# class UserManager(BaseUserManager):
-#     def create_superuser(self, email, password=None, **kwargs):
-#         user = self.model(email=email, is_staff=True, is_superuser=True, **kwargs)
-#         user.set_password(password)
-#         user.save(using=self._db)
-#         return user
+class BusinessOwner(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)    
+    photo = models.ImageField(upload_to='business_owners', null=True, blank=True)
+    sphere = models.CharField(max_length=100, null=True, blank=True)
+    business_name = models.CharField(max_length=100, null=True, blank=True)
+    contact_info = models.TextField(null=True, blank=True)
+    active = models.BooleanField(default=True)
 
-# class User(AbstractBaseUser, PermissionsMixin):
-#     email = models.EmailField(max_length=255, unique=True)
-#     name = models.CharField(max_length=255)
-#     is_active = models.BooleanField(default=True)
-#     is_staff = models.BooleanField(default=False)
-#     is_superuser = models.BooleanField(default=False)
 
-#     objects = UserManager()
 
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['name']
+class Business(models.Model):
+    title = models.CharField(max_length=255)
+    owner = models.ForeignKey(BusinessOwner, on_delete=models.CASCADE)
+    budget = models.models.DecimalField(max_digits=10, decimal_places=2)
+    conditions = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+    is_premium = models.BooleanField(default=False)
 
-#     def __str__(self):
-#         return self.email
+
+
+class BlockedUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
