@@ -46,7 +46,7 @@ urlpatterns = [
     path('register/', RegisterAPI.as_view(), name='register'),
     # path('login/', LoginView.as_view(), name='login'),
     path('login/', Authorization.as_view(), name='login'),
-    path('me/', UserAPI.as_view(), name='userinfo'),
+    path('userinfo/', UserAPI.as_view(), name='userinfo'),
     # path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc')
