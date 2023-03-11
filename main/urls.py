@@ -15,21 +15,17 @@ Including another URLconf
 # """
 
 from django.contrib import admin
-from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import include
 from rest_framework import permissions
-from users.views import (RegisterAPI, UserAPI, Authorization,
-                        BusinessListView, BusinessDetailView, 
-                        BusinessListView, BusinessDetailView,  
-                        InvestorListView, InvestorDetailView, 
-                        BusinessOwnerViewSet, BusinessPremiumView)
 
+from apps.business.views import BusinessListView, BusinessDetailView
+from apps.users.views import (RegisterAPI, UserAPI, Authorization,
+                        InvestorListView, InvestorDetailView)
 
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.urls import path
-
 
 
 schema_view = get_schema_view(
@@ -62,7 +58,8 @@ urlpatterns = [
     path('investors/', InvestorListView.as_view(), name='investor_list'),
     path('investors/<int:pk>/', InvestorDetailView.as_view(), name='investor_detail'),
 
-    path('business_owner/', include('users.urls'))
+    path('business_owner/', include('apps.users.urls')),
+    path('api/v1/business', include('apps.business.urls'))
 
 
 ]

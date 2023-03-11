@@ -39,12 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'users',
     'rest_framework',
     'rest_framework.authtoken',
-    'drf_yasg'
-]
+    'drf_yasg',
 
+
+    # installed apps
+    'apps.users',
+    'apps.business'
+]
 
 
 REST_FRAMEWORK = {
@@ -67,6 +70,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'main.urls'
 
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -82,8 +86,6 @@ TEMPLATES = [
         },
     },
 ]
-
-
 
 
 WSGI_APPLICATION = 'main.wsgi.application'
