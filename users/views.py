@@ -1,14 +1,17 @@
 from django.contrib.auth.models import User
 
 from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework  import viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework import (generics, permissions, status)
+from rest_framework.permissions import IsAdminUser
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserSerializer
-from .serializers import AuthorizationSerializer
-
+from .models import (Investor, BusinessOwner, Business, BlockedUser)
+from .serializers import (AuthorizationSerializer, UserSerializer, 
+                         BusinessSerializer, BusinessOwnerSerializer, InvestorSerializer)
 
 
 class Authorization(TokenObtainPairView):
@@ -28,7 +31,6 @@ class RegisterAPI(generics.GenericAPIView):
         return Response({'token': token.key})
 
 
-
 class UserAPI(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -38,21 +40,16 @@ class UserAPI(generics.RetrieveAPIView):
 
 
 
-from rest_framework import generics, status
-from rest_framework.permissions import IsAdminUser
-from rest_framework.response import Response
-from .models import User, Business, Advertisement
-from .serializers import UserSerializer, BusinessSerializer, AdvertisementSerializer
 
-class UserListView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminUser]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserListView(generics.ListCreateAPIView):
+#     permission_classes = [IsAdminUser]
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
-class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUser]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [IsAdminUser]
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 class BusinessListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser]
@@ -60,31 +57,18 @@ class BusinessListView(generics.ListCreateAPIView):
     serializer_class = BusinessSerializer
 
 class BusinessDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUser]
     queryset = Business.objects.all()
     serializer_class = BusinessSerializer
-
-class AdvertisementListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser]
-    queryset = Advertisement.objects.all()
-    serializer_class = AdvertisementSerializer
 
-class AdvertisementDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUser]
-    queryset = Advertisement.objects.all()
-    serializer_class = AdvertisementSerializer
-
-class AdvertisementPremiumView(generics.UpdateAPIView):
-    permission_classes = [IsAdminUser]
-    queryset = Advertisement.objects.all()
-    serializer_class = AdvertisementSerializer
-
-    def update(self, request, *args, **kwargs):
+    def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.is_premium = True
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+        if instance.owner != request.user:
+            return Response(status=403)
+        self.perform_destroy(instance)
+        return Response(status=204)
+
+
 
 class UserBlockView(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
@@ -97,6 +81,68 @@ class UserBlockView(generics.UpdateAPIView):
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+
+class BusinessPremiumView(generics.UpdateAPIView):
+    permission_classes = [IsAdminUser]
+    queryset = Business.objects.all()
+    serializer_class = BusinessSerializer
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.is_premium = True
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+
+
+# class BusinessDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [IsAdminUser]
+#     queryset = Business.objects.all()
+#     serializer_class = BusinessSerializer
+
+
+
+
+
+class InvestorListView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Investor.objects.all()
+    serializer_class = InvestorSerializer
+
+
+class InvestorDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Investor.objects.all()
+    serializer_class = InvestorSerializer
+
+
+class BusinessOwnerViewSet(viewsets.ModelViewSet):
+    queryset = BusinessOwner.objects.all()
+    serializer_class = BusinessOwnerSerializer
+
+    @action(detail=True)
+    def bus(self, request, pk=None):
+        business_owner = self.get_object()
+        bus = Business.objects.filter(owner=business_owner)
+        serializer = BusinessSerializer(bus, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['post'])
+    def toggle_bus_status(self, request, pk=None):
+        business_owner = self.get_object()
+        bus = Business.objects.get(pk=request.data['bus_id'], owner=business_owner)
+        bus.is_active = not bus.is_active
+        bus.save()
+        serializer = BusinessSerializer(bus)
+        return Response(serializer.data)
+
+
+
+
+
 
 
 

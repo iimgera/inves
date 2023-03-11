@@ -15,10 +15,16 @@ Including another URLconf
 # """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework import permissions
-from users.views import RegisterAPI, UserAPI, Authorization
+from users.views import (RegisterAPI, UserAPI, Authorization,
+                        BusinessListView, BusinessDetailView, 
+                        BusinessListView, BusinessDetailView,  
+                        InvestorListView, InvestorDetailView, 
+                        BusinessOwnerViewSet, BusinessPremiumView)
+
+
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -43,12 +49,20 @@ app_name = 'users'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc'),
+    
     path('register/', RegisterAPI.as_view(), name='register'),
-    # path('login/', LoginView.as_view(), name='login'),
     path('login/', Authorization.as_view(), name='login'),
     path('userinfo/', UserAPI.as_view(), name='userinfo'),
-    # path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc')
+    
+    path('businesses/', BusinessListView.as_view(), name='business_list'),
+    path('businesses/<int:pk>/', BusinessDetailView.as_view(), name='business_detail'),
+    
+    path('investors/', InvestorListView.as_view(), name='investor_list'),
+    path('investors/<int:pk>/', InvestorDetailView.as_view(), name='investor_detail'),
+
+    path('business_owner/', include('users.urls'))
+
 
 ]

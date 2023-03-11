@@ -1,7 +1,10 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import BlockedUser
+
+from .models import Investor, BusinessOwner, Business, BlockedUser
+
+
 
 class AuthorizationSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -25,6 +28,7 @@ class AuthorizationSerializer(TokenObtainPairSerializer):
 
 
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -41,6 +45,20 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class InvestorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Investor
+        fields = ['id','user', 'first_name', 'last_name', 'photo', 'about', 'active']
+
+class BusinessOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessOwner
+        fields = ['id','user', 'first_name', 'last_name', 'photo', 'sphere', 'business_name', 'contact_info', 'active']
+
+class BusinessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Business
+        fields = ['id','title', 'owner', 'budget', 'conditions', 'term', 'description', 'is_active', 'is_premium', 'category', 'location']
 
 
 class BlockedUserSerializer(serializers.ModelSerializer):

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+
+
 class Investor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50, null=True, blank=True)
@@ -24,12 +27,16 @@ class BusinessOwner(models.Model):
 
 
 class Business(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=100, null=True, blank=True)
     owner = models.ForeignKey(BusinessOwner, on_delete=models.CASCADE)
-    budget = models.models.DecimalField(max_digits=10, decimal_places=2)
+    budget = models.DecimalField(max_digits=10, decimal_places=2)
     conditions = models.IntegerField()
+    term = models.DurationField()
+    description = models.TextField()
     is_active = models.BooleanField(default=True)
     is_premium = models.BooleanField(default=False)
+    category = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=50, null=True, blank=True)
 
 
 
