@@ -58,7 +58,7 @@ class BusinessOwnerSerializer(serializers.ModelSerializer):
 class BusinessSerializer(serializers.ModelSerializer):
     class Meta:
         model = Business
-        fields = ['id','title', 'owner', 'budget', 'conditions', 'term', 'description', 'is_active', 'is_premium', 'category', 'location']
+        fields = ['id','title', 'owner', 'budget', 'conditions', 'term', 'description', 'is_active', 'is_premium', 'location']
 
 
 class BlockedUserSerializer(serializers.ModelSerializer):

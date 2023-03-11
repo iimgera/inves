@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 
 class Investor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Имя')
-    last_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Фамилия' )
+    first_name = models.CharField(max_length=50, null=True, blank=False, verbose_name='Имя')
+    last_name = models.CharField(max_length=50, null=True, blank=False, verbose_name='Фамилия' )
     photo = models.ImageField(upload_to='investors', null=True, blank=True, verbose_name='Фото')
     about = models.TextField(verbose_name='Обо мне')
     active = models.BooleanField(default=True)
@@ -25,12 +25,12 @@ class Investor(models.Model):
 
 class BusinessOwner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Имя')
-    last_name = models.CharField(max_length=50, null=True, blank=True, verbose_name='Фамилия')    
+    first_name = models.CharField(max_length=50, null=True, blank=False, verbose_name='Имя')
+    last_name = models.CharField(max_length=50, null=True, blank=False, verbose_name='Фамилия')    
     photo = models.ImageField(upload_to='business_owners', null=True, blank=True, verbose_name='Фото')
-    sphere = models.CharField(max_length=100, null=True, blank=True, verbose_name='Сфера')
-    business_name = models.CharField(max_length=100, null=True, blank=True, verbose_name='Название бизнеса')
-    contact_info = models.TextField(null=True, blank=True, verbose_name='Контактная информация')
+    sphere = models.CharField(max_length=100, null=True, blank=False, verbose_name='Сфера')
+    business_name = models.CharField(max_length=100, null=True, blank=False, verbose_name='Название бизнеса')
+    contact_info = models.TextField(null=True, blank=False, verbose_name='Контактная информация')
     active = models.BooleanField(default=True)
 
 
@@ -46,7 +46,7 @@ class BusinessOwner(models.Model):
 
 
 class Business(models.Model):
-    title = models.CharField(max_length=100, null=True, blank=True, verbose_name='Название')
+    title = models.CharField(max_length=100, null=True, blank=False, verbose_name='Название')
     owner = models.ForeignKey(BusinessOwner, on_delete=models.CASCADE,  verbose_name='Владелец')
     budget = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма инвестиций')
     conditions = models.IntegerField(verbose_name='Условия')
@@ -79,3 +79,4 @@ class BlockedUser(models.Model):
         verbose_name = 'Заблокированный пользователь'
         verbose_name_plural = 'Заблокированные пользователи'
         ordering = ['-id']
+
