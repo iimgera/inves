@@ -59,7 +59,7 @@ urlpatterns = [
     path('investors/<int:pk>/', InvestorDetailView.as_view(), name='investor_detail'),
 
     path('business_owner/', include('apps.users.urls')),
-    path('api/v1/business', include('apps.business.urls'))
+    path('api/v1/business/', include('apps.business.urls'))
 
 
 ]
