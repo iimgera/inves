@@ -7,8 +7,11 @@ coreschema==0.0.4
 cryptography==39.0.2
 defusedxml==0.7.1
 Django==4.1.7
+django-ckeditor==6.5.1
 django-cors-headers==3.14.0
+django-filter==22.1
 django-jazzmin==2.6.0
+django-js-asset==2.0.0
 django-templated-mail==1.1.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==4.8.0
@@ -37,5 +40,3 @@ social-auth-core==4.3.0
 sqlparse==0.4.3
 uritemplate==4.1.1
 urllib3==1.26.14
-django-ckeditor==6.5.1
-
